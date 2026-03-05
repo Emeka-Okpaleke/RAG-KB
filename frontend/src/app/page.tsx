@@ -7,6 +7,7 @@ import Sidebar from "@/components/Sidebar";
 import Dashboard from "@/components/Dashboard";
 import ChatView from "@/components/ChatView";
 import CollectionView from "@/components/CollectionView";
+import CollectionsPage from "@/components/CollectionsPage";
 import LandingPage from "@/components/LandingPage";
 import { Loader2 } from "lucide-react";
 
@@ -46,7 +47,10 @@ export default function Home() {
 
   const renderMainContent = () => {
     if (activeView === "dashboard") {
-      return <Dashboard />;
+      return <Dashboard onViewChange={handleViewChange} />;
+    }
+    if (activeView === "collections") {
+      return <CollectionsPage onViewChange={handleViewChange} />;
     }
     if (activeView === "chat") {
       return <ChatView />;
@@ -57,7 +61,7 @@ export default function Home() {
     if (activeView.startsWith("conversation-") && activeId) {
       return <ChatView conversationId={activeId} key={activeId} />;
     }
-    return <Dashboard />;
+    return <Dashboard onViewChange={handleViewChange} />;
   };
 
   return (

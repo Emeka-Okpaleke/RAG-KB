@@ -24,7 +24,11 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export default function Dashboard() {
+interface DashboardProps {
+  onViewChange: (view: string, id?: string) => void;
+}
+
+export default function Dashboard({ onViewChange }: DashboardProps) {
   const { user, token } = useAuth();
   const [collections, setCollections] = useState<any[]>([]);
   const [conversations, setConversations] = useState<any[]>([]);
@@ -68,76 +72,93 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-background p-6">
+    <div className="h-full overflow-y-auto bg-gradient-to-br from-background to-secondary/20 p-6 md:p-8">
       <motion.div 
         variants={container}
         initial="hidden"
         animate="show"
-        className="max-w-6xl mx-auto space-y-8"
+        className="max-w-7xl mx-auto space-y-8"
       >
-        {/* Welcome */}
-        <motion.div variants={item} className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Welcome back, {user?.name}
-          </h1>
-          <p className="text-muted-foreground mt-2 text-lg">
-            Here's what's happening in your knowledge base.
-          </p>
+        {/* Welcome Header */}
+        <motion.div variants={item} className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60">
+              Welcome back, {user?.name}
+            </h1>
+            <p className="text-muted-foreground mt-2 text-lg">
+              Manage your knowledge base and AI interactions.
+            </p>
+          </div>
+          <button 
+            onClick={() => onViewChange("chat")}
+            className="px-6 py-2.5 bg-primary text-primary-foreground rounded-full font-medium shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2"
+          >
+            <MessageSquare size={18} />
+            Start New Chat
+          </button>
         </motion.div>
 
         {/* Getting Started Guide - Show when no collections exist */}
         {collections.length === 0 && (
-          <motion.div variants={item} className="card p-6 border-2 border-dashed border-primary/30 bg-primary/5">
-            <div className="flex items-start gap-4">
-              <div className="p-3 bg-primary/10 rounded-xl">
-                <Sparkles className="text-primary" size={24} />
+          <motion.div variants={item} className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent p-8 shadow-sm">
+            <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
+            
+            <div className="flex items-start gap-6 relative z-10">
+              <div className="p-4 bg-background shadow-sm rounded-2xl border border-primary/10">
+                <Sparkles className="text-primary" size={32} />
               </div>
               <div className="flex-1">
-                <h2 className="text-lg font-semibold text-foreground mb-2">
-                  Getting Started Guide
+                <h2 className="text-xl font-semibold text-foreground mb-3">
+                  Let's set up your Knowledge Base
                 </h2>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Follow these steps to start using your AI-powered knowledge base:
+                <p className="text-muted-foreground mb-6 max-w-2xl">
+                  Follow these simple steps to empower your AI with your own documents.
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="flex items-start gap-3 p-4 bg-background rounded-lg border border-border">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm shrink-0">
-                      1
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Step 1 */}
+                  <div 
+                    onClick={() => onViewChange("collections")}
+                    className="group bg-background/60 backdrop-blur-sm p-5 rounded-xl border border-border hover:border-primary/50 hover:shadow-md transition-all cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm shrink-0 shadow-sm">
+                        1
+                      </div>
+                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">Create Collection</h3>
                     </div>
-                    <div>
-                      <p className="font-medium text-foreground flex items-center gap-2">
-                        <Plus size={14} /> Create a Collection
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Go to <strong>Collections</strong> in the sidebar and click <strong>"New Collection"</strong> to organize your documents.
-                      </p>
-                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Create a dedicated space for your related documents.
+                    </p>
                   </div>
-                  <div className="flex items-start gap-3 p-4 bg-background rounded-lg border border-border">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600 font-bold text-sm shrink-0">
-                      2
+                  
+                  {/* Step 2 */}
+                  <div className="bg-background/60 backdrop-blur-sm p-5 rounded-xl border border-border">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600 font-bold text-sm shrink-0 shadow-sm">
+                        2
+                      </div>
+                      <h3 className="font-semibold text-foreground">Upload Documents</h3>
                     </div>
-                    <div>
-                      <p className="font-medium text-foreground flex items-center gap-2">
-                        <Upload size={14} /> Upload Documents
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Click on your collection and <strong>drag & drop</strong> PDF, DOCX, or TXT files to upload.
-                      </p>
-                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Upload PDF, DOCX, or TXT files to train your AI.
+                    </p>
                   </div>
-                  <div className="flex items-start gap-3 p-4 bg-background rounded-lg border border-border">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 text-purple-600 font-bold text-sm shrink-0">
-                      3
+                  
+                  {/* Step 3 */}
+                  <div 
+                    onClick={() => onViewChange("chat")}
+                    className="group bg-background/60 backdrop-blur-sm p-5 rounded-xl border border-border hover:border-primary/50 hover:shadow-md transition-all cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 text-purple-600 font-bold text-sm shrink-0 shadow-sm">
+                        3
+                      </div>
+                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">Start Chatting</h3>
                     </div>
-                    <div>
-                      <p className="font-medium text-foreground flex items-center gap-2">
-                        <Search size={14} /> Ask Questions
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Go to <strong>Chat</strong> and ask questions. The AI will answer using your uploaded documents.
-                      </p>
-                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Ask questions and get answers based on your data.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -146,131 +167,145 @@ export default function Dashboard() {
         )}
 
         {/* Stats Grid */}
-        <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="card p-6 flex flex-col justify-between hover:shadow-md transition-shadow">
+        <motion.div variants={item} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="card p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border-l-4 border-l-blue-500">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Collections</p>
-                <h3 className="text-3xl font-bold text-foreground mt-2">{collections.length}</h3>
+                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Collections</p>
+                <h3 className="text-4xl font-bold text-foreground mt-2">{collections.length}</h3>
               </div>
-              <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
-                <FolderOpen size={20} />
+              <div className="p-3 bg-blue-500/10 text-blue-600 rounded-xl">
+                <FolderOpen size={24} />
               </div>
-            </div>
-            <div className="mt-4 text-xs text-muted-foreground">
-              Active knowledge containers
             </div>
           </div>
 
-          <div className="card p-6 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div className="card p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border-l-4 border-l-green-500">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Documents</p>
-                <h3 className="text-3xl font-bold text-foreground mt-2">{totalDocuments}</h3>
+                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Documents</p>
+                <h3 className="text-4xl font-bold text-foreground mt-2">{totalDocuments}</h3>
               </div>
-              <div className="p-2 bg-green-100 text-green-600 rounded-lg">
-                <FileText size={20} />
+              <div className="p-3 bg-green-500/10 text-green-600 rounded-xl">
+                <FileText size={24} />
               </div>
-            </div>
-            <div className="mt-4 text-xs text-muted-foreground">
-              Total files processed
             </div>
           </div>
 
-          <div className="card p-6 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div className="card p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border-l-4 border-l-purple-500">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Chunks</p>
-                <h3 className="text-3xl font-bold text-foreground mt-2">{stats?.chunks || 0}</h3>
+                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Chunks</p>
+                <h3 className="text-4xl font-bold text-foreground mt-2">{stats?.chunks || 0}</h3>
               </div>
-              <div className="p-2 bg-purple-100 text-purple-600 rounded-lg">
-                <Layers size={20} />
+              <div className="p-3 bg-purple-500/10 text-purple-600 rounded-xl">
+                <Layers size={24} />
               </div>
-            </div>
-            <div className="mt-4 text-xs text-muted-foreground">
-              Vector embeddings indexed
             </div>
           </div>
 
-          <div className="card p-6 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div className="card p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border-l-4 border-l-amber-500">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Conversations</p>
-                <h3 className="text-3xl font-bold text-foreground mt-2">{conversations.length}</h3>
+                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Conversations</p>
+                <h3 className="text-4xl font-bold text-foreground mt-2">{conversations.length}</h3>
               </div>
-              <div className="p-2 bg-amber-100 text-amber-600 rounded-lg">
-                <MessageSquare size={20} />
+              <div className="p-3 bg-amber-500/10 text-amber-600 rounded-xl">
+                <MessageSquare size={24} />
               </div>
-            </div>
-            <div className="mt-4 text-xs text-muted-foreground">
-              Chat sessions created
             </div>
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Content Area (2 cols) */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Recent Activity / Conversations */}
-            <motion.div variants={item} className="card p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Recent Activity / Conversations */}
+          <motion.div variants={item} className="lg:col-span-2 space-y-6">
+            <div className="card p-6 h-full border border-border/50 shadow-sm">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                  <Clock size={18} className="text-muted-foreground" />
+                <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                  <Clock size={20} className="text-muted-foreground" />
                   Recent Conversations
                 </h2>
-                <button className="text-sm text-primary hover:underline flex items-center gap-1">
-                  View all <ArrowRight size={14} />
+                <button 
+                  onClick={() => onViewChange("chat")}
+                  className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
+                >
+                  View all <ArrowRight size={16} />
                 </button>
               </div>
               
               {conversations.length === 0 ? (
-                <div className="text-center py-10 bg-secondary/30 rounded-lg border border-border border-dashed">
-                  <MessageSquare size={32} className="mx-auto text-muted-foreground mb-3 opacity-50" />
-                  <p className="text-sm text-muted-foreground">No conversations started yet</p>
+                <div className="text-center py-12 bg-secondary/20 rounded-xl border border-dashed border-border">
+                  <div className="w-16 h-16 bg-background rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+                    <MessageSquare size={24} className="text-muted-foreground/50" />
+                  </div>
+                  <h3 className="text-foreground font-medium mb-1">No conversations yet</h3>
+                  <p className="text-sm text-muted-foreground mb-4">Start chatting to see your history here.</p>
+                  <button 
+                    onClick={() => onViewChange("chat")}
+                    className="text-sm px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                  >
+                    Start Chat
+                  </button>
                 </div>
               ) : (
-                <div className="space-y-1">
+                <div className="space-y-3">
                   {conversations.slice(0, 5).map((conv: any) => (
                     <div
                       key={conv.id}
-                      className="group flex items-center justify-between p-3 hover:bg-secondary/50 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-border"
+                      onClick={() => onViewChange("conversation", conv.id)}
+                      className="group flex items-center justify-between p-4 bg-background hover:bg-secondary/40 rounded-xl transition-all cursor-pointer border border-transparent hover:border-border/60 hover:shadow-sm"
                     >
-                      <div className="flex items-center gap-3 overflow-hidden">
-                        <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 font-bold text-xs">
+                      <div className="flex items-center gap-4 overflow-hidden">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 text-primary flex items-center justify-center shrink-0 font-bold text-xs shadow-inner">
                           AI
                         </div>
                         <div className="min-w-0">
                           <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
                             {conv.title}
                           </p>
-                          <p className="text-xs text-muted-foreground flex items-center gap-1">
-                            {conv.message_count} messages • {formatDate(conv.updated_at)}
+                          <p className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5">
+                            <span className="flex items-center gap-1 bg-secondary px-1.5 py-0.5 rounded-md">
+                              <MessageSquare size={10} /> {conv.message_count}
+                            </span>
+                            <span>•</span>
+                            <span>{formatDate(conv.updated_at)}</span>
                           </p>
                         </div>
                       </div>
-                      <ArrowRight size={16} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-1" />
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center bg-background border border-border opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                          <ArrowRight size={14} className="text-muted-foreground" />
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
               )}
-            </motion.div>
+            </div>
 
             {/* System Health */}
             {healthStatus && (
-              <motion.div variants={item} className="card p-6">
+              <div className="card p-6 border border-border/50 shadow-sm">
                 <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <Activity size={18} className="text-muted-foreground" />
+                  <Activity size={20} className="text-muted-foreground" />
                   System Health
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className={cn(
-                    "flex items-center gap-3 p-3 rounded-lg border",
-                    healthStatus.checks?.mongodb ? "bg-green-50/50 border-green-200" : "bg-red-50/50 border-red-200"
+                    "flex items-center gap-3 p-4 rounded-xl border transition-all",
+                    healthStatus.checks?.mongodb 
+                      ? "bg-green-500/5 border-green-500/20" 
+                      : "bg-red-500/5 border-red-500/20"
                   )}>
                     {healthStatus.checks?.mongodb ? (
-                      <CheckCircle size={18} className="text-green-600 shrink-0" />
+                      <div className="p-1.5 bg-green-500/10 rounded-full text-green-600">
+                        <CheckCircle size={16} />
+                      </div>
                     ) : (
-                      <XCircle size={18} className="text-red-600 shrink-0" />
+                      <div className="p-1.5 bg-red-500/10 rounded-full text-red-600">
+                        <XCircle size={16} />
+                      </div>
                     )}
                     <div>
                       <p className="text-sm font-medium text-foreground">MongoDB</p>
@@ -279,15 +314,19 @@ export default function Dashboard() {
                   </div>
 
                   <div className={cn(
-                    "flex items-center gap-3 p-3 rounded-lg border",
+                    "flex items-center gap-3 p-4 rounded-xl border transition-all",
                     (healthStatus.ai_provider === "groq" || healthStatus.checks?.ollama) 
-                      ? "bg-green-50/50 border-green-200" 
-                      : "bg-red-50/50 border-red-200"
+                      ? "bg-green-500/5 border-green-500/20" 
+                      : "bg-red-500/5 border-red-500/20"
                   )}>
                     {(healthStatus.ai_provider === "groq" || healthStatus.checks?.ollama) ? (
-                      <CheckCircle size={18} className="text-green-600 shrink-0" />
+                      <div className="p-1.5 bg-green-500/10 rounded-full text-green-600">
+                        <CheckCircle size={16} />
+                      </div>
                     ) : (
-                      <XCircle size={18} className="text-red-600 shrink-0" />
+                      <div className="p-1.5 bg-red-500/10 rounded-full text-red-600">
+                        <XCircle size={16} />
+                      </div>
                     )}
                     <div>
                       <p className="text-sm font-medium text-foreground">AI Provider</p>
@@ -296,13 +335,19 @@ export default function Dashboard() {
                   </div>
 
                   <div className={cn(
-                    "flex items-center gap-3 p-3 rounded-lg border",
-                    healthStatus.checks?.chromadb ? "bg-green-50/50 border-green-200" : "bg-red-50/50 border-red-200"
+                    "flex items-center gap-3 p-4 rounded-xl border transition-all",
+                    healthStatus.checks?.chromadb 
+                      ? "bg-green-500/5 border-green-500/20" 
+                      : "bg-red-500/5 border-red-500/20"
                   )}>
                     {healthStatus.checks?.chromadb ? (
-                      <CheckCircle size={18} className="text-green-600 shrink-0" />
+                      <div className="p-1.5 bg-green-500/10 rounded-full text-green-600">
+                        <CheckCircle size={16} />
+                      </div>
                     ) : (
-                      <XCircle size={18} className="text-red-600 shrink-0" />
+                      <div className="p-1.5 bg-red-500/10 rounded-full text-red-600">
+                        <XCircle size={16} />
+                      </div>
                     )}
                     <div>
                       <p className="text-sm font-medium text-foreground">ChromaDB</p>
@@ -310,52 +355,71 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )}
-          </div>
+          </motion.div>
 
-          {/* Sidebar Area (1 col) */}
-          <div className="space-y-6">
-            {/* Recent Collections */}
-            <motion.div variants={item} className="card p-6 h-full">
+          {/* Recent Collections */}
+          <motion.div variants={item} className="space-y-6">
+            <div className="card p-6 h-full border border-border/50 shadow-sm flex flex-col">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                  <FolderOpen size={18} className="text-muted-foreground" />
+                <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                  <FolderOpen size={20} className="text-muted-foreground" />
                   Collections
                 </h2>
-                <button className="p-1 hover:bg-secondary rounded-md text-muted-foreground hover:text-foreground transition-colors">
-                  <ArrowRight size={16} />
+                <button 
+                  onClick={() => onViewChange("collections")}
+                  className="p-1.5 hover:bg-secondary rounded-lg text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <ArrowRight size={18} />
                 </button>
               </div>
               
               {collections.length === 0 ? (
-                 <div className="text-center py-10">
+                 <div className="text-center py-12 flex-1 flex flex-col items-center justify-center">
+                  <FolderOpen size={48} className="text-muted-foreground/20 mb-3" />
                   <p className="text-sm text-muted-foreground">No collections yet</p>
+                  <button 
+                    onClick={() => onViewChange("collections")}
+                    className="mt-4 text-sm font-medium text-primary hover:underline"
+                  >
+                    Create your first collection
+                  </button>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {collections.slice(0, 5).map((col: any) => (
                     <div
                       key={col.id}
-                      className="p-3 rounded-lg border border-border bg-card hover:border-primary/50 transition-colors group cursor-pointer"
+                      onClick={() => onViewChange("collection", col.id)}
+                      className="p-4 rounded-xl border border-border bg-background hover:bg-secondary/40 hover:border-primary/30 hover:shadow-sm transition-all group cursor-pointer"
                     >
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate pr-2">
                           {col.name}
                         </p>
-                        <span className="text-[10px] bg-secondary px-1.5 py-0.5 rounded text-muted-foreground">
+                        <span className="text-[10px] bg-secondary px-2 py-1 rounded-full text-muted-foreground font-medium shrink-0">
                           {col.document_count} docs
                         </span>
                       </div>
-                      <p className="text-xs text-muted-foreground">
-                        Created {formatDate(col.created_at)}
+                      <p className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Clock size={10} /> {formatDate(col.created_at)}
                       </p>
                     </div>
                   ))}
+                  
+                  {collections.length > 5 && (
+                    <button 
+                      onClick={() => onViewChange("collections")}
+                      className="w-full py-2 text-xs text-muted-foreground hover:text-foreground transition-colors text-center border border-dashed border-border rounded-lg hover:bg-secondary/30"
+                    >
+                      View {collections.length - 5} more...
+                    </button>
+                  )}
                 </div>
               )}
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         </div>
       </motion.div>
     </div>

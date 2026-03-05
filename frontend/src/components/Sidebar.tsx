@@ -133,6 +133,12 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
             onClick={() => onViewChange("dashboard")} 
           />
           <NavItem 
+            icon={FolderOpen} 
+            label="Collections" 
+            active={activeView === "collections"} 
+            onClick={() => onViewChange("collections")} 
+          />
+          <NavItem 
             icon={Plus} 
             label="New Thread" 
             active={activeView === "chat"} 
