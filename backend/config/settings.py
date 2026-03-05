@@ -34,6 +34,9 @@ class Settings(BaseSettings):
     CHUNK_OVERLAP: int = 50
     MAX_UPLOAD_SIZE_MB: int = 50
 
+    # Frontend URL (for CORS)
+    FRONTEND_URL: Optional[str] = None
+
     # Rate limiting (portfolio protection)
     RATE_LIMIT_PER_MINUTE: int = 60
     RATE_LIMIT_QUERY_PER_MINUTE: int = 5
