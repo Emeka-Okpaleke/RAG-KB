@@ -18,9 +18,11 @@ import {
   ArrowRight,
   Clock,
   Plus,
-  Upload,
   Search,
-  Sparkles
+  Sparkles,
+  MoreVertical,
+  Bell,
+  Settings
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -72,355 +74,306 @@ export default function Dashboard({ onViewChange }: DashboardProps) {
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-gradient-to-br from-background to-secondary/20 p-6 md:p-8">
+    <div className="h-full overflow-y-auto bg-gray-50/50 dark:bg-background p-6">
       <motion.div 
         variants={container}
         initial="hidden"
         animate="show"
-        className="max-w-7xl mx-auto space-y-8"
+        className="max-w-[1600px] mx-auto grid grid-cols-1 xl:grid-cols-4 gap-8"
       >
-        {/* Welcome Header */}
-        <motion.div variants={item} className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <div>
-            <h1 className="text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60">
-              Welcome back, {user?.name}
-            </h1>
-            <p className="text-muted-foreground mt-2 text-lg">
-              Manage your knowledge base and AI interactions.
-            </p>
-          </div>
-          <button 
-            onClick={() => onViewChange("chat")}
-            className="px-6 py-2.5 bg-primary text-primary-foreground rounded-full font-medium shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2"
-          >
-            <MessageSquare size={18} />
-            Start New Chat
-          </button>
-        </motion.div>
-
-        {/* Getting Started Guide - Show when no collections exist */}
-        {collections.length === 0 && (
-          <motion.div variants={item} className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent p-8 shadow-sm">
-            <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
-            
-            <div className="flex items-start gap-6 relative z-10">
-              <div className="p-4 bg-background shadow-sm rounded-2xl border border-primary/10">
-                <Sparkles className="text-primary" size={32} />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-xl font-semibold text-foreground mb-3">
-                  Let's set up your Knowledge Base
-                </h2>
-                <p className="text-muted-foreground mb-6 max-w-2xl">
-                  Follow these simple steps to empower your AI with your own documents.
-                </p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Step 1 */}
-                  <div 
-                    onClick={() => onViewChange("collections")}
-                    className="group bg-background/60 backdrop-blur-sm p-5 rounded-xl border border-border hover:border-primary/50 hover:shadow-md transition-all cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm shrink-0 shadow-sm">
-                        1
-                      </div>
-                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">Create Collection</h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Create a dedicated space for your related documents.
-                    </p>
-                  </div>
-                  
-                  {/* Step 2 */}
-                  <div className="bg-background/60 backdrop-blur-sm p-5 rounded-xl border border-border">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600 font-bold text-sm shrink-0 shadow-sm">
-                        2
-                      </div>
-                      <h3 className="font-semibold text-foreground">Upload Documents</h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Upload PDF, DOCX, or TXT files to train your AI.
-                    </p>
-                  </div>
-                  
-                  {/* Step 3 */}
-                  <div 
-                    onClick={() => onViewChange("chat")}
-                    className="group bg-background/60 backdrop-blur-sm p-5 rounded-xl border border-border hover:border-primary/50 hover:shadow-md transition-all cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 text-purple-600 font-bold text-sm shrink-0 shadow-sm">
-                        3
-                      </div>
-                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">Start Chatting</h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Ask questions and get answers based on your data.
-                    </p>
-                  </div>
-                </div>
-              </div>
+        {/* Main Content Area (Left - 3 Cols) */}
+        <div className="xl:col-span-3 space-y-8">
+          
+          {/* Top Bar / Search */}
+          <motion.div variants={item} className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="relative w-full max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+              <input 
+                type="text" 
+                placeholder="Search your knowledge base..." 
+                className="w-full pl-10 pr-4 py-3 rounded-2xl border-none bg-white dark:bg-card shadow-sm focus:ring-2 focus:ring-primary/20 transition-all text-sm"
+              />
+            </div>
+            <div className="flex items-center gap-3">
+               <button className="p-3 bg-white dark:bg-card rounded-full shadow-sm text-muted-foreground hover:text-foreground transition-colors relative">
+                 <Bell size={20} />
+                 <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-card"></span>
+               </button>
+               <button className="p-3 bg-white dark:bg-card rounded-full shadow-sm text-muted-foreground hover:text-foreground transition-colors">
+                 <Settings size={20} />
+               </button>
             </div>
           </motion.div>
-        )}
 
-        {/* Stats Grid */}
-        <motion.div variants={item} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="card p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border-l-4 border-l-blue-500">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Collections</p>
-                <h3 className="text-4xl font-bold text-foreground mt-2">{collections.length}</h3>
-              </div>
-              <div className="p-3 bg-blue-500/10 text-blue-600 rounded-xl">
-                <FolderOpen size={24} />
-              </div>
+          {/* Hero Banner */}
+          <motion.div variants={item} className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg p-8 md:p-12">
+            <div className="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-60 h-60 bg-white/10 rounded-full blur-3xl"></div>
+            
+            <div className="relative z-10 max-w-2xl">
+              <span className="inline-block py-1 px-3 rounded-full bg-white/20 text-xs font-medium mb-4 backdrop-blur-sm border border-white/10">
+                AI-Powered Knowledge Base
+              </span>
+              <h1 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">
+                Unlock Insights from Your Documents <br/> with RAG Technology
+              </h1>
+              <p className="text-blue-100 mb-8 max-w-lg text-lg">
+                Upload documents, create collections, and start asking questions to get instant, cited answers.
+              </p>
+              <button 
+                onClick={() => onViewChange("chat")}
+                className="px-6 py-3 bg-white text-indigo-600 rounded-xl font-bold shadow-lg hover:shadow-xl hover:bg-gray-50 transition-all transform hover:-translate-y-0.5 flex items-center gap-2"
+              >
+                Start Chatting <ArrowRight size={18} />
+              </button>
             </div>
-          </div>
+            
+            {/* Decorative Sparkles */}
+            <Sparkles className="absolute top-10 right-10 text-white/30 w-24 h-24 animate-pulse" strokeWidth={1} />
+          </motion.div>
 
-          <div className="card p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border-l-4 border-l-green-500">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Documents</p>
-                <h3 className="text-4xl font-bold text-foreground mt-2">{totalDocuments}</h3>
-              </div>
-              <div className="p-3 bg-green-500/10 text-green-600 rounded-xl">
-                <FileText size={24} />
-              </div>
+          {/* Quick Stats Grid (Mini Cards) */}
+          <motion.div variants={item} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+             {[
+               { label: "Active Collections", value: collections.length, icon: FolderOpen, color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-900/20" },
+               { label: "Total Documents", value: totalDocuments, icon: FileText, color: "text-violet-600", bg: "bg-violet-50 dark:bg-violet-900/20" },
+               { label: "Conversations", value: conversations.length, icon: MessageSquare, color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-900/20" },
+             ].map((stat, i) => (
+               <div key={i} className="bg-white dark:bg-card p-4 rounded-2xl shadow-sm border border-border/50 flex items-center gap-4">
+                 <div className={cn("p-3 rounded-xl", stat.bg, stat.color)}>
+                   <stat.icon size={24} />
+                 </div>
+                 <div>
+                   <h3 className="text-2xl font-bold text-foreground">{stat.value}</h3>
+                   <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{stat.label}</p>
+                 </div>
+                 <button className="ml-auto text-muted-foreground hover:text-foreground">
+                   <MoreVertical size={16} />
+                 </button>
+               </div>
+             ))}
+          </motion.div>
+
+          {/* Recent Collections (Grid) */}
+          <motion.div variants={item}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-foreground">Recent Collections</h2>
+              <button 
+                onClick={() => onViewChange("collections")}
+                className="flex items-center justify-center w-8 h-8 rounded-full bg-white dark:bg-card shadow-sm border border-border text-primary hover:bg-primary hover:text-primary-foreground transition-all"
+              >
+                <ArrowRight size={16} />
+              </button>
             </div>
-          </div>
-
-          <div className="card p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border-l-4 border-l-purple-500">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Chunks</p>
-                <h3 className="text-4xl font-bold text-foreground mt-2">{stats?.chunks || 0}</h3>
+            
+            {collections.length === 0 ? (
+              <div className="bg-white dark:bg-card rounded-3xl p-8 text-center border border-border border-dashed">
+                <FolderOpen size={48} className="mx-auto text-muted-foreground/30 mb-4" />
+                <h3 className="text-lg font-medium text-foreground">No collections yet</h3>
+                <p className="text-muted-foreground mb-6">Create a collection to organize your documents.</p>
+                <button onClick={() => onViewChange("collections")} className="text-primary font-medium hover:underline">Create Collection</button>
               </div>
-              <div className="p-3 bg-purple-500/10 text-purple-600 rounded-xl">
-                <Layers size={24} />
-              </div>
-            </div>
-          </div>
-
-          <div className="card p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border-l-4 border-l-amber-500">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Conversations</p>
-                <h3 className="text-4xl font-bold text-foreground mt-2">{conversations.length}</h3>
-              </div>
-              <div className="p-3 bg-amber-500/10 text-amber-600 rounded-xl">
-                <MessageSquare size={24} />
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Recent Activity / Conversations */}
-          <motion.div variants={item} className="lg:col-span-2 space-y-6">
-            <div className="card p-6 h-full border border-border/50 shadow-sm">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-                  <Clock size={20} className="text-muted-foreground" />
-                  Recent Conversations
-                </h2>
-                <button 
-                  onClick={() => onViewChange("chat")}
-                  className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
-                >
-                  View all <ArrowRight size={16} />
-                </button>
-              </div>
-              
-              {conversations.length === 0 ? (
-                <div className="text-center py-12 bg-secondary/20 rounded-xl border border-dashed border-border">
-                  <div className="w-16 h-16 bg-background rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
-                    <MessageSquare size={24} className="text-muted-foreground/50" />
-                  </div>
-                  <h3 className="text-foreground font-medium mb-1">No conversations yet</h3>
-                  <p className="text-sm text-muted-foreground mb-4">Start chatting to see your history here.</p>
-                  <button 
-                    onClick={() => onViewChange("chat")}
-                    className="text-sm px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {collections.slice(0, 3).map((col) => (
+                  <div 
+                    key={col.id}
+                    onClick={() => onViewChange("collection", col.id)}
+                    className="bg-white dark:bg-card p-5 rounded-3xl shadow-sm border border-border/50 hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer group relative overflow-hidden"
                   >
-                    Start Chat
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {conversations.slice(0, 5).map((conv: any) => (
-                    <div
-                      key={conv.id}
-                      onClick={() => onViewChange("conversation", conv.id)}
-                      className="group flex items-center justify-between p-4 bg-background hover:bg-secondary/40 rounded-xl transition-all cursor-pointer border border-transparent hover:border-border/60 hover:shadow-sm"
-                    >
-                      <div className="flex items-center gap-4 overflow-hidden">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 text-primary flex items-center justify-center shrink-0 font-bold text-xs shadow-inner">
-                          AI
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
-                            {conv.title}
-                          </p>
-                          <p className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5">
-                            <span className="flex items-center gap-1 bg-secondary px-1.5 py-0.5 rounded-md">
-                              <MessageSquare size={10} /> {conv.message_count}
-                            </span>
-                            <span>•</span>
-                            <span>{formatDate(conv.updated_at)}</span>
-                          </p>
-                        </div>
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="p-3 bg-secondary rounded-2xl text-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                        <FolderOpen size={24} />
                       </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center bg-background border border-border opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
-                          <ArrowRight size={14} className="text-muted-foreground" />
-                        </div>
-                      </div>
+                      <button className="text-muted-foreground hover:text-foreground">
+                        <MoreVertical size={18} />
+                      </button>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* System Health */}
-            {healthStatus && (
-              <div className="card p-6 border border-border/50 shadow-sm">
-                <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <Activity size={20} className="text-muted-foreground" />
-                  System Health
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className={cn(
-                    "flex items-center gap-3 p-4 rounded-xl border transition-all",
-                    healthStatus.checks?.mongodb 
-                      ? "bg-green-500/5 border-green-500/20" 
-                      : "bg-red-500/5 border-red-500/20"
-                  )}>
-                    {healthStatus.checks?.mongodb ? (
-                      <div className="p-1.5 bg-green-500/10 rounded-full text-green-600">
-                        <CheckCircle size={16} />
-                      </div>
-                    ) : (
-                      <div className="p-1.5 bg-red-500/10 rounded-full text-red-600">
-                        <XCircle size={16} />
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-sm font-medium text-foreground">MongoDB</p>
-                      <p className="text-xs text-muted-foreground">Database</p>
+                    
+                    <h3 className="font-bold text-lg text-foreground mb-1 truncate">{col.name}</h3>
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-4 h-10">
+                      {col.description || "No description provided."}
+                    </p>
+                    
+                    <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                      <span className="text-xs font-medium text-muted-foreground bg-secondary px-2 py-1 rounded-lg">
+                        {col.document_count} files
+                      </span>
+                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Clock size={12} /> {formatDate(col.created_at)}
+                      </span>
                     </div>
                   </div>
-
-                  <div className={cn(
-                    "flex items-center gap-3 p-4 rounded-xl border transition-all",
-                    (healthStatus.ai_provider === "groq" || healthStatus.checks?.ollama) 
-                      ? "bg-green-500/5 border-green-500/20" 
-                      : "bg-red-500/5 border-red-500/20"
-                  )}>
-                    {(healthStatus.ai_provider === "groq" || healthStatus.checks?.ollama) ? (
-                      <div className="p-1.5 bg-green-500/10 rounded-full text-green-600">
-                        <CheckCircle size={16} />
-                      </div>
-                    ) : (
-                      <div className="p-1.5 bg-red-500/10 rounded-full text-red-600">
-                        <XCircle size={16} />
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-sm font-medium text-foreground">AI Provider</p>
-                      <p className="text-xs text-muted-foreground capitalize">{healthStatus.ai_provider}</p>
-                    </div>
+                ))}
+                
+                {/* Create New Card */}
+                <button 
+                  onClick={() => onViewChange("collections")}
+                  className="bg-secondary/30 border-2 border-dashed border-border rounded-3xl p-5 flex flex-col items-center justify-center gap-3 hover:bg-secondary/50 hover:border-primary/50 transition-all group text-muted-foreground hover:text-primary"
+                >
+                  <div className="w-12 h-12 rounded-full bg-white dark:bg-card flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                    <Plus size={24} />
                   </div>
-
-                  <div className={cn(
-                    "flex items-center gap-3 p-4 rounded-xl border transition-all",
-                    healthStatus.checks?.chromadb 
-                      ? "bg-green-500/5 border-green-500/20" 
-                      : "bg-red-500/5 border-red-500/20"
-                  )}>
-                    {healthStatus.checks?.chromadb ? (
-                      <div className="p-1.5 bg-green-500/10 rounded-full text-green-600">
-                        <CheckCircle size={16} />
-                      </div>
-                    ) : (
-                      <div className="p-1.5 bg-red-500/10 rounded-full text-red-600">
-                        <XCircle size={16} />
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-sm font-medium text-foreground">ChromaDB</p>
-                      <p className="text-xs text-muted-foreground">Vector Store</p>
-                    </div>
-                  </div>
-                </div>
+                  <span className="font-medium">Create New</span>
+                </button>
               </div>
             )}
           </motion.div>
 
-          {/* Recent Collections */}
-          <motion.div variants={item} className="space-y-6">
-            <div className="card p-6 h-full border border-border/50 shadow-sm flex flex-col">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-                  <FolderOpen size={20} className="text-muted-foreground" />
-                  Collections
-                </h2>
-                <button 
-                  onClick={() => onViewChange("collections")}
-                  className="p-1.5 hover:bg-secondary rounded-lg text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <ArrowRight size={18} />
-                </button>
-              </div>
-              
-              {collections.length === 0 ? (
-                 <div className="text-center py-12 flex-1 flex flex-col items-center justify-center">
-                  <FolderOpen size={48} className="text-muted-foreground/20 mb-3" />
-                  <p className="text-sm text-muted-foreground">No collections yet</p>
-                  <button 
-                    onClick={() => onViewChange("collections")}
-                    className="mt-4 text-sm font-medium text-primary hover:underline"
-                  >
-                    Create your first collection
-                  </button>
-                </div>
+          {/* Recent Conversations (List) */}
+          <motion.div variants={item}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-foreground">Recent Activity</h2>
+              <button 
+                onClick={() => onViewChange("chat")}
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+              >
+                See all
+              </button>
+            </div>
+
+            <div className="bg-white dark:bg-card rounded-3xl shadow-sm border border-border/50 overflow-hidden">
+              {conversations.length === 0 ? (
+                <div className="p-8 text-center text-muted-foreground">No recent activity</div>
               ) : (
-                <div className="space-y-3">
-                  {collections.slice(0, 5).map((col: any) => (
-                    <div
-                      key={col.id}
-                      onClick={() => onViewChange("collection", col.id)}
-                      className="p-4 rounded-xl border border-border bg-background hover:bg-secondary/40 hover:border-primary/30 hover:shadow-sm transition-all group cursor-pointer"
+                <div className="divide-y divide-border/50">
+                  {conversations.slice(0, 5).map((conv) => (
+                    <div 
+                      key={conv.id}
+                      onClick={() => onViewChange("conversation", conv.id)}
+                      className="p-4 flex items-center gap-4 hover:bg-secondary/30 transition-colors cursor-pointer group"
                     >
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate pr-2">
-                          {col.name}
-                        </p>
-                        <span className="text-[10px] bg-secondary px-2 py-1 rounded-full text-muted-foreground font-medium shrink-0">
-                          {col.document_count} docs
-                        </span>
+                      <div className="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 flex items-center justify-center font-bold text-xs shrink-0">
+                        AI
                       </div>
-                      <p className="text-xs text-muted-foreground flex items-center gap-1">
-                        <Clock size={10} /> {formatDate(col.created_at)}
-                      </p>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors">
+                          {conv.title}
+                        </h4>
+                        <p className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5">
+                          <span className="bg-secondary px-1.5 py-0.5 rounded text-[10px] font-medium uppercase tracking-wide">
+                            Chat
+                          </span>
+                          <span>•</span>
+                          <span>{formatDate(conv.updated_at)}</span>
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                         <span className="text-xs text-muted-foreground bg-secondary/50 px-2 py-1 rounded-full flex items-center gap-1">
+                           <MessageSquare size={12} /> {conv.message_count}
+                         </span>
+                         <button className="w-8 h-8 flex items-center justify-center rounded-full border border-border text-muted-foreground hover:bg-primary hover:text-white hover:border-primary transition-all">
+                           <ArrowRight size={14} />
+                         </button>
+                      </div>
                     </div>
                   ))}
-                  
-                  {collections.length > 5 && (
-                    <button 
-                      onClick={() => onViewChange("collections")}
-                      className="w-full py-2 text-xs text-muted-foreground hover:text-foreground transition-colors text-center border border-dashed border-border rounded-lg hover:bg-secondary/30"
-                    >
-                      View {collections.length - 5} more...
-                    </button>
-                  )}
                 </div>
               )}
             </div>
           </motion.div>
+
         </div>
+
+        {/* Right Sidebar (1 Col) */}
+        <motion.div variants={item} className="xl:col-span-1 space-y-8">
+          
+          {/* Profile Card */}
+          <div className="bg-white dark:bg-card rounded-3xl p-6 shadow-sm border border-border/50 text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-br from-primary/20 to-purple-500/20 z-0"></div>
+            
+            <div className="relative z-10">
+              <div className="w-24 h-24 mx-auto bg-white dark:bg-card p-1 rounded-full mb-3 shadow-md">
+                 <div className="w-full h-full rounded-full bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center text-3xl text-white font-bold">
+                   {user?.name?.charAt(0).toUpperCase()}
+                 </div>
+              </div>
+              
+              <h2 className="text-xl font-bold text-foreground">Good Morning, {user?.name?.split(' ')[0]}!</h2>
+              <p className="text-sm text-muted-foreground mb-6">Continue your learning journey.</p>
+              
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                <div className="bg-secondary/50 p-3 rounded-2xl">
+                  <span className="block text-2xl font-bold text-primary">{collections.length}</span>
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Collections</span>
+                </div>
+                <div className="bg-secondary/50 p-3 rounded-2xl">
+                   <span className="block text-2xl font-bold text-violet-600">{stats?.chunks || 0}</span>
+                   <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Chunks</span>
+                </div>
+              </div>
+              
+              <button className="w-full py-3 bg-foreground text-background rounded-xl font-medium hover:opacity-90 transition-opacity">
+                View Profile
+              </button>
+            </div>
+          </div>
+
+          {/* System Health */}
+          <div className="bg-white dark:bg-card rounded-3xl p-6 shadow-sm border border-border/50">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-bold text-foreground">System Health</h3>
+              <button className="text-muted-foreground hover:text-foreground">
+                <MoreVertical size={16} />
+              </button>
+            </div>
+
+            {healthStatus ? (
+              <div className="space-y-4">
+                {[
+                  { label: "MongoDB", sub: "Database", status: healthStatus.checks?.mongodb, icon: Database },
+                  { label: "AI Provider", sub: healthStatus.ai_provider, status: (healthStatus.ai_provider === "groq" || healthStatus.checks?.ollama), icon: Bot },
+                  { label: "ChromaDB", sub: "Vector Store", status: healthStatus.checks?.chromadb, icon: Layers },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-4">
+                    <div className={cn(
+                      "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-colors",
+                      item.status ? "bg-green-50 text-green-600 dark:bg-green-900/20" : "bg-red-50 text-red-600 dark:bg-red-900/20"
+                    )}>
+                      <item.icon size={20} />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-foreground text-sm">{item.label}</h4>
+                      <p className="text-xs text-muted-foreground capitalize">{item.sub}</p>
+                    </div>
+                    <div className={cn(
+                      "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider",
+                      item.status ? "bg-green-100 text-green-700 dark:bg-green-900/40" : "bg-red-100 text-red-700 dark:bg-red-900/40"
+                    )}>
+                      {item.status ? "Active" : "Issue"}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+               <div className="text-center py-4 text-muted-foreground text-sm">Loading status...</div>
+            )}
+          </div>
+
+          {/* Storage / Usage (Mock) */}
+           <div className="bg-white dark:bg-card rounded-3xl p-6 shadow-sm border border-border/50">
+             <h3 className="font-bold text-foreground mb-4">Storage Usage</h3>
+             <div className="relative pt-2">
+               <div className="flex items-end justify-between text-sm mb-2">
+                 <span className="font-medium text-foreground">{(stats?.chunks || 0) * 0.5} KB</span>
+                 <span className="text-muted-foreground">1 GB Limit</span>
+               </div>
+               <div className="w-full bg-secondary h-3 rounded-full overflow-hidden">
+                 <div 
+                   className="bg-primary h-full rounded-full transition-all duration-1000" 
+                   style={{ width: `${Math.min(((stats?.chunks || 0) / 1000) * 100, 100)}%` }}
+                 ></div>
+               </div>
+               <p className="text-xs text-muted-foreground mt-3">
+                 Your vector database usage is healthy.
+               </p>
+             </div>
+           </div>
+
+        </motion.div>
+
       </motion.div>
     </div>
   );

@@ -1,6 +1,19 @@
 import httpx
+import asyncio
 from typing import List, Optional
 from config import settings
+
+# Global model cache for sentence-transformers
+_st_model = None
+
+
+def _get_st_model():
+    """Load sentence-transformers model (cached after first call)."""
+    global _st_model
+    if _st_model is None:
+        from sentence_transformers import SentenceTransformer
+        _st_model = SentenceTransformer(settings.HF_EMBED_MODEL)
+    return _st_model
 
 
 async def generate_embeddings_ollama(texts: List[str]) -> List[List[float]]:
@@ -21,29 +34,14 @@ async def generate_embeddings_ollama(texts: List[str]) -> List[List[float]]:
     return embeddings
 
 
-async def generate_embeddings_huggingface(texts: List[str]) -> List[List[float]]:
-    """Generate embeddings using HuggingFace Inference API (free)."""
-    model = settings.HF_EMBED_MODEL
-    api_url = f"https://api-inference.huggingface.co/pipeline/feature-extraction/{model}"
-    
-    headers = {}
-    if settings.HF_API_TOKEN:
-        headers["Authorization"] = f"Bearer {settings.HF_API_TOKEN}"
-    
-    embeddings = []
-    async with httpx.AsyncClient(timeout=120.0) as client:
-        for text in texts:
-            response = await client.post(
-                api_url,
-                headers=headers,
-                json={"inputs": text, "options": {"wait_for_model": True}},
-            )
-            response.raise_for_status()
-            embedding = response.json()
-            # HF returns nested list for single input
-            if isinstance(embedding[0], list):
-                embedding = embedding[0]
-            embeddings.append(embedding)
+async def generate_embeddings_local(texts: List[str]) -> List[List[float]]:
+    """Generate embeddings using sentence-transformers locally (no API needed)."""
+    loop = asyncio.get_event_loop()
+    model = _get_st_model()
+    # Run in thread pool to avoid blocking the event loop
+    embeddings = await loop.run_in_executor(
+        None, lambda: model.encode(texts, normalize_embeddings=True).tolist()
+    )
     return embeddings
 
 
@@ -59,17 +57,16 @@ async def check_ollama_available() -> bool:
 
 async def generate_embeddings(texts: List[str]) -> List[List[float]]:
     """Generate embeddings using the configured provider."""
-    # Use HuggingFace if configured or if Ollama is unavailable
     if settings.EMBEDDING_PROVIDER == "huggingface":
-        return await generate_embeddings_huggingface(texts)
+        return await generate_embeddings_local(texts)
     elif settings.EMBEDDING_PROVIDER == "ollama":
         return await generate_embeddings_ollama(texts)
     else:
-        # Auto-detect: try Ollama first, fallback to HuggingFace
+        # Auto-detect: try Ollama first, fallback to local sentence-transformers
         if await check_ollama_available():
             return await generate_embeddings_ollama(texts)
         else:
-            return await generate_embeddings_huggingface(texts)
+            return await generate_embeddings_local(texts)
 
 
 async def generate_single_embedding(text: str) -> List[float]:
