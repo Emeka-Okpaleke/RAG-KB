@@ -22,6 +22,13 @@ class Settings(BaseSettings):
     OLLAMA_MODEL: str = "llama3.2:latest"
     OLLAMA_EMBED_MODEL: str = "nomic-embed-text:latest"
 
+    # HuggingFace (for cloud embeddings - free)
+    HF_API_TOKEN: Optional[str] = None
+    HF_EMBED_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
+    
+    # Embedding provider: "ollama", "huggingface", or "auto" (tries ollama first)
+    EMBEDDING_PROVIDER: str = "auto"
+
     # Groq
     GROQ_API_KEY: Optional[str] = None
     GROQ_MODEL: str = "llama-3.3-70b-versatile"

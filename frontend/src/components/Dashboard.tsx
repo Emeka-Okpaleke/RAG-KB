@@ -16,7 +16,11 @@ import {
   Bot,
   Layers,
   ArrowRight,
-  Clock
+  Clock,
+  Plus,
+  Upload,
+  Search,
+  Sparkles
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -80,6 +84,66 @@ export default function Dashboard() {
             Here's what's happening in your knowledge base.
           </p>
         </motion.div>
+
+        {/* Getting Started Guide - Show when no collections exist */}
+        {collections.length === 0 && (
+          <motion.div variants={item} className="card p-6 border-2 border-dashed border-primary/30 bg-primary/5">
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-primary/10 rounded-xl">
+                <Sparkles className="text-primary" size={24} />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-lg font-semibold text-foreground mb-2">
+                  Getting Started Guide
+                </h2>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Follow these steps to start using your AI-powered knowledge base:
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="flex items-start gap-3 p-4 bg-background rounded-lg border border-border">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm shrink-0">
+                      1
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground flex items-center gap-2">
+                        <Plus size={14} /> Create a Collection
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Go to <strong>Collections</strong> in the sidebar and click <strong>"New Collection"</strong> to organize your documents.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-4 bg-background rounded-lg border border-border">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600 font-bold text-sm shrink-0">
+                      2
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground flex items-center gap-2">
+                        <Upload size={14} /> Upload Documents
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Click on your collection and <strong>drag & drop</strong> PDF, DOCX, or TXT files to upload.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-4 bg-background rounded-lg border border-border">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 text-purple-600 font-bold text-sm shrink-0">
+                      3
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground flex items-center gap-2">
+                        <Search size={14} /> Ask Questions
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Go to <strong>Chat</strong> and ask questions. The AI will answer using your uploaded documents.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Stats Grid */}
         <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -216,9 +280,11 @@ export default function Dashboard() {
 
                   <div className={cn(
                     "flex items-center gap-3 p-3 rounded-lg border",
-                    healthStatus.checks?.ollama ? "bg-green-50/50 border-green-200" : "bg-red-50/50 border-red-200"
+                    (healthStatus.ai_provider === "groq" || healthStatus.checks?.ollama) 
+                      ? "bg-green-50/50 border-green-200" 
+                      : "bg-red-50/50 border-red-200"
                   )}>
-                    {healthStatus.checks?.ollama ? (
+                    {(healthStatus.ai_provider === "groq" || healthStatus.checks?.ollama) ? (
                       <CheckCircle size={18} className="text-green-600 shrink-0" />
                     ) : (
                       <XCircle size={18} className="text-red-600 shrink-0" />
