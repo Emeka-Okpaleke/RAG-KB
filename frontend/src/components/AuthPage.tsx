@@ -53,7 +53,7 @@ export default function AuthPage() {
             <div className="w-8 h-8 rounded-lg bg-white text-zinc-900 flex items-center justify-center shadow-lg shadow-white/10">
               <BookOpen size={18} strokeWidth={3} />
             </div>
-            <span className="font-bold text-lg tracking-tight">Strut Knowledge Base</span>
+            <span className="font-bold text-lg tracking-tight">RAG Knowledge Base</span>
           </div>
         </div>
 
@@ -84,7 +84,7 @@ export default function AuthPage() {
         </div>
         
         <div className="relative z-10 flex justify-between items-center text-sm text-zinc-500">
-          <p>© 2024 Strut KB. All rights reserved.</p>
+          <p>© 2026 RAG KB. All rights reserved.</p>
           <div className="flex gap-6">
             <span className="hover:text-zinc-300 cursor-pointer transition-colors">Privacy Policy</span>
             <span className="hover:text-zinc-300 cursor-pointer transition-colors">Terms of Service</span>

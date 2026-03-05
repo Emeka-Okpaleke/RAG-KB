@@ -19,7 +19,7 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
             <div className="w-8 h-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold">
               <BookOpen size={18} strokeWidth={3} />
             </div>
-            <span className="font-bold text-lg tracking-tight">Strut KB</span>
+            <span className="font-bold text-lg tracking-tight">RAG KB</span>
           </div>
 
           <div className="flex items-center gap-4">

@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Strut Knowledge Base",
+  title: "RAG Knowledge Base",
   description: "Enterprise knowledge base with AI-powered Q&A",
 };
 

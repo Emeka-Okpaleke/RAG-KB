@@ -42,7 +42,7 @@ export function Hero() {
           className="text-lg md:text-xl text-zinc-400 max-w-2xl mb-10 leading-relaxed"
         >
           Upload files, ask questions, and get instant, cited answers. 
-          Strut Knowledge Base transforms your static documents into an interactive brain.
+          RAG Knowledge Base transforms your static documents into an interactive brain.
         </motion.p>
 
         {/* Buttons */}
