@@ -3,17 +3,18 @@ import asyncio
 from typing import List, Optional
 from config import settings
 
-# Global model cache for sentence-transformers
-_st_model = None
+# Global model cache for fastembed
+_embed_model = None
 
 
-def _get_st_model():
-    """Load sentence-transformers model (cached after first call)."""
-    global _st_model
-    if _st_model is None:
-        from sentence_transformers import SentenceTransformer
-        _st_model = SentenceTransformer(settings.HF_EMBED_MODEL)
-    return _st_model
+def _get_embed_model():
+    """Load fastembed model (cached after first call). Uses ONNX - low memory."""
+    global _embed_model
+    if _embed_model is None:
+        from fastembed import TextEmbedding
+        # all-MiniLM-L6-v2 is the default, lightweight model
+        _embed_model = TextEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    return _embed_model
 
 
 async def generate_embeddings_ollama(texts: List[str]) -> List[List[float]]:
@@ -35,14 +36,15 @@ async def generate_embeddings_ollama(texts: List[str]) -> List[List[float]]:
 
 
 async def generate_embeddings_local(texts: List[str]) -> List[List[float]]:
-    """Generate embeddings using sentence-transformers locally (no API needed)."""
+    """Generate embeddings using fastembed locally (ONNX, low memory)."""
     loop = asyncio.get_event_loop()
-    model = _get_st_model()
+    model = _get_embed_model()
     # Run in thread pool to avoid blocking the event loop
     embeddings = await loop.run_in_executor(
-        None, lambda: model.encode(texts, normalize_embeddings=True).tolist()
+        None, lambda: list(model.embed(texts))
     )
-    return embeddings
+    # Convert numpy arrays to lists
+    return [emb.tolist() for emb in embeddings]
 
 
 async def check_ollama_available() -> bool:
